@@ -1,4 +1,13 @@
 # Slot_Machine
+
+# Summary of the Game Flow
+# Deposit money.
+# Choose how many lines to bet on.
+# Choose how much to bet per line.
+# Spin the slot machine.
+# Check if you won and update your balance.
+# Repeat until you quit!
+
 import random
 # Announcing Global Constant
 Max_Lines = 3
