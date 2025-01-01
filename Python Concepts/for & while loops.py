@@ -1,0 +1,17 @@
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+for i in numbers:
+    if i == 5:
+        print("Found 5!")
+        break
+    else:
+        print("Not found!. Found:", i)
+'''
+while True:
+    break
+else:
+    print("Not found!")
+'''
+
+
+
