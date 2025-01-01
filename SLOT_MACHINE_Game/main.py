@@ -144,8 +144,8 @@ def spin(balance):
     slots = get_symbol_spin(ROWS, COLS, symbol_count)
     print_slot_machine(slots)
     winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
-    print(f"You win! Your total balance is ${balance}.")
-    print(f"You have won on", *winning_lines)
+    print(f" Your total winnings are ${winnings}")
+    print(f"You have won on lines:", *winning_lines)
     return winnings - total_bet
 # Our main Function
 def main():
