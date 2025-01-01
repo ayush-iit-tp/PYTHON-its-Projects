@@ -1,3 +1,6 @@
+'''
+Here I have practiced some very basic Codes related to Python.
+'''
 import math
 
  BASICS
