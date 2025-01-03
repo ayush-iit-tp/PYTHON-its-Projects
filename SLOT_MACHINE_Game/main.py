@@ -8,165 +8,194 @@
 # Check if you won and update your balance.
 # Repeat until you quit!
 
-import random
-# Announcing Global Constant
-Max_Lines = 3
-Max_Bet = 1000
-Min_Bet = 1
-# No of rows and columns in slot machine are defined here:
-ROWS = 3
-COLS = 3
+# Simplified Slot Machine Game
 
+import random
+
+# Constants for the game
+MAX_LINES = 3  # Maximum number of lines to bet on
+MAX_BET = 100  # Maximum bet per line
+MIN_BET = 1    # Minimum bet per line
+ROWS = 3       # Number of rows in the slot machine
+COLS = 3       # Number of columns in the slot machine
+
+# Symbols and their properties
 symbol_count = {
-    "A": 2,
-    "B": 4,
-    "C": 6,
-    "D": 8
+    "A": 2,  # Symbol A appears 2 times
+    "B": 4,  # Symbol B appears 4 times
+    "C": 6,  # Symbol C appears 6 times
+    "D": 8   # Symbol D appears 8 times
 }
+
 symbol_value = {
-    "A": 5,
-    "B": 4,
-    "C": 3,
-    "D": 2
+    "A": 5,  # Winning multiplier for A
+    "B": 4,  # Winning multiplier for B
+    "C": 3,  # Winning multiplier for C
+    "D": 2   # Winning multiplier for D
 }
-# To take amount from the user on which he will do betting
+
+# Function 1: Ask the user for their deposit
 def deposit():
     while True:
-        amount = input("How much do you want to deposit?: $")
+        amount = input("How much do you want to deposit? $")
         if amount.isdigit():
-            amount =int(amount)
-            if   amount >0 :
-                break
+            if int(amount) > 0:
+                return int(amount)
             else:
-                print("Amount must be greater than 0")
-                '''
-                if amount.isdigit(): Take only if amount entered is number and then We need the amount to be converted into integer from string.
-                '''
+                print("Please enter a valid amount greater than 0.")
         else:
-            print("Please Enter a number.")
-            '''
-            else if you are not all entering a number do this
-            '''
-    return amount
-# To take number of lines from the user on which he will do betting
+            print("Please enter a valid amount greater than 0.")
+    '''
+    This function asks the user to input an initial deposit amount.
+    - It ensures that the input is a positive integer.
+    - If valid, it returns the deposit amount.
+    '''
+
+# Function 2: Ask the user for the number of lines to bet on
 def get_number_of_lines():
-    lines = 0
     while True:
-        lines = input("How much number of lines to bet on between (1-" +str(Max_Lines)+")? ")
-        '''
-        str(Max_Lines) converts the value of Max_Lines to a string.
-        ")? " is another string literal.
-        '''
+        lines = input(f"Enter the number of lines to bet on (1-{MAX_LINES}): ")
         if lines.isdigit():
-            lines =int(lines)
-            if 1 <=lines <= Max_Lines:
-                break
+            if 1 <= int(lines) <= MAX_LINES:
+                return int(lines)
             else:
-                print("Lines must be entered as a positive number")
-                '''
-                if lines.isdigit(): Take only if no of lines entered are number and then We need the no of lines to be converted into integer from string.
-                '''
+                print(f"Please enter a number between 1 and {MAX_LINES}.")
         else:
-            print("Please Enter a number.")
-            '''
-            else if you are not all entering a number do this
-            '''
-    return lines
-# To take amount from the user on which he will do betting on each line
+            print(f"Please enter a number between 1 and {MAX_LINES}.")
+    '''
+    This function asks the user to specify the number of lines to bet on.
+    - It validates that the input is a number between 1 and MAX_LINES.
+    - Returns the chosen number of lines.
+    '''
+
+# Function 3: Ask the user for the bet amount per line
 def get_bet():
     while True:
-        amount = input("How much do you want to bet on each line?: $")
+        amount = input(f"Enter your bet amount per line (${MIN_BET}-${MAX_BET}): $")
         if amount.isdigit():
-            amount =int(amount)
-            if  Min_Bet <= amount <= Max_Bet :
-                break
+            if MIN_BET <= int(amount) <= MAX_BET:
+                return int(amount)
             else:
-                print(f"Amount must be a between ${Min_Bet} and ${Max_Bet}")
-                '''
-                if amount.isdigit(): Take only if amount entered is number and then We need the amount to be converted into integer from string.
-                '''
+                print(f"Please enter a valid amount between ${MIN_BET} and ${MAX_BET}.")
         else:
-            print("Please Enter a number.")
-            '''
-            else if you are not all entering a number do this
-            '''
-    return amount
-# Generate Outcome of the slot machine
+            print(f"Please enter a valid amount between ${MIN_BET} and ${MAX_BET}.")
+    '''
+    This function prompts the user to enter the amount to bet per line.
+    - Ensures the amount is between MIN_BET and MAX_BET.
+    - Returns the validated bet amount.
+    '''
+
+# Function 4: Generate the slot machine's random symbols
 def get_symbol_spin(rows, cols, symbols):
     all_symbols = []
-    '''
-    Main question is how to select random symbol?
-    '''
-    for symbol, symbol_count in symbols.items():
-        for _ in range(symbol_count):
-            all_symbols.append(symbol)
+    for symbol, count in symbols.items():
+        all_symbols.extend([symbol] * count)  # Add each symbol multiple times
 
-    columns =[]
-    for col in range(cols): # we have 3 columns so for doing everything 3 times , we are using this for loop
-        column =[]
-        current_symbols = all_symbols[:] # it creates a copy of all symbols but by making changes in current_symbols,  all_symbols will not be affected
+    columns = []
+    for _ in range(cols):
+        column = []
+        current_symbols = all_symbols[:]
         for _ in range(rows):
-            value = random.choice(all_symbols)
+            value = random.choice(current_symbols)
             current_symbols.remove(value)
             column.append(value)
-            # removing the value so that we  will not pick it again
-        columns.append(column) # adding that value to the column
+        columns.append(column)
     return columns
-# printing values on the slot machine
+    '''
+    This function generates a random layout for the slot machine.
+    - Each column is filled with random symbols based on their frequency.
+    - Ensures no duplicate symbols within a single column.
+    - Returns the layout as a list of columns.
+    '''
+
+# Function 5: Print the slot machine's symbols
 def print_slot_machine(columns):
-    for row in range(len(columns[0])): # means no of elements in each column
-        for i, column in enumerate(columns):
-            if i != len(columns) - 1:
-                print(column[row], end=" | ")
-            else:
-                print(column[row],end="")
-        print()
-# Final function to check winnings means all symbols are same in a row or not
-def check_winnings(columns,lines,bet,values):
+    for row in range(len(columns[0])):
+        print(" | ".join(column[row] for column in columns))
+    '''
+    This function displays the slot machine layout.
+    - Iterates through rows and prints symbols separated by " | ".
+    - Makes the output easy to read.
+    '''  
+    
+# Function 6: Check winnings
+def check_winnings(columns, lines, bet, values): 
     winnings = 0
     winning_lines = []
     for line in range(lines):
         symbol = columns[0][line]
-        for column in columns:
-            symbol_to_check = column[line]
-            if symbol != symbol_to_check:
-                break
-        else:
+        if all(column[line] == symbol for column in columns):
             winnings += values[symbol] * bet
             winning_lines.append(line + 1)
-
     return winnings, winning_lines
-#
+    '''
+    This function calculates the winnings based on the slot machine result.
+    - Checks each line to see if all symbols match across columns.
+    - Calculates total winnings and identifies winning lines.
+    - Returns the winnings and the list of winning lines.
+    '''
+      
+# Function 7: Play one round of the slot machine
 def spin(balance):
     lines = get_number_of_lines()
     while True:
         bet = get_bet()
         total_bet = bet * lines
         if total_bet > balance:
-            print(
-                f"You don't have enough money to bet that amount, your total balance is ${balance}. \nYou need ${total_bet} in your balance amount.\nAdd ${total_bet - balance} to your total balance.\nHave a nice day!")
+            print(f"Insufficient balance. Your current balance is ${balance}, but you need ${total_bet}.")
         else:
             break
 
-    print(f"You are betting ${bet} on {lines} lines.Total bet is ${total_bet}.\nKeep Playing!")
+    print(f"You are betting ${bet} on {lines} lines. Total bet: ${total_bet}.")
 
     slots = get_symbol_spin(ROWS, COLS, symbol_count)
     print_slot_machine(slots)
+
     winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
-    print(f" Your total winnings are ${winnings}")
-    print(f"You have won on lines:", *winning_lines)
+    if winnings > 0:
+        print(f"You won ${winnings}!")
+    else:
+        print("No wins this time.")
+
+    if winning_lines:
+        print(f"Winning lines: {', '.join(map(str, winning_lines))}")
+
     return winnings - total_bet
-# Our main Function
-def main():
+    '''
+    This function handles one round of the game.
+    - Prompts the user for the number of lines and bet amount.
+    - Checks if the user has enough balance to place the bet.
+    - Spins the slot machine, displays the result, and calculates winnings.
+    - Returns the net change in balance (winnings minus total bet).
+    '''
+      
+# Function 8: Main game loop
+def main(): 
     balance = deposit()
     while True:
-        print(f"CURRENT BALANCE: ${balance}")
-        answer =input("Press Enter to Play! (q to quit).")
-        if answer == "q":
+        print(f"Current balance: ${balance}")
+        answer = input("Press Enter to play (q to quit): ")
+        if answer.lower() == "q":
             break
-        balance += spin(balance)
-    print(f"Your CURRENT BALANCE is: ${balance}")
-main()
+        else:
+            balance += spin(balance)
+    print(f"Game over! Your final balance is ${balance}.")
+    '''
+    This is the main function that controls the game flow.
+    - Asks the user for an initial deposit.
+    - Allows the user to play multiple rounds or quit the game.
+    - Updates the balance after each round and displays the final balance.
+    '''
+      
+# Run the game
+if __name__ == "__main__":
+    '''
+    The "if __name__ == \"__main__\":" block ensures the game runs
+    only when this script is executed directly.
+    It calls the main function to start the game.
+    '''
+    main()
+
 
 
 
